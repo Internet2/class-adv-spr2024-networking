@@ -1,4 +1,5 @@
 // ***GCP VPC Build***
+// https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#example-usage---basic-provider-blocks
 provider "google" {
   // GCP credentials added as Windows environment variable in VScode settings.json file
   project = "class-adv2024-vueibaezis10"
@@ -17,6 +18,7 @@ resource "google_compute_subnetwork" "i2_project_gcp_terraform_subnet_1" {
   network       = google_compute_network.i2_project_gcp_terraform_vpc.name
 }
 // ***AWS VPC Build***
+// https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/connect_instance
 provider "aws" {
   // AWS credentials added as Windows environment variable in VScode settings.json file
   region = "us-east-1"
@@ -39,6 +41,7 @@ resource "aws_subnet" "i2_project_aws_terraform_subnet_1" {
 }
 
 // ***AWS Security Group***
+// https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group
 resource "aws_security_group" "allow_ssh_icmp_from_gcp" {
   name        = "allow_ssh_icmp_from_gcp"
   description = "Security group allowing SSH and ICMP from GCP"
@@ -69,6 +72,7 @@ resource "aws_security_group" "allow_ssh_icmp_from_gcp" {
 }
 
 // ***GCP SSH and ICMP inbound rule from AWS***
+// https://registry.terraform.io/providers/hashicorp/google/3.0.0-beta.1/docs/resources/compute_firewall
 resource "google_compute_firewall" "allow_ssh_icmp_from_aws" {
   name    = "allow-ssh-icmp-from-aws"
   network = google_compute_network.i2_project_gcp_terraform_vpc.name
