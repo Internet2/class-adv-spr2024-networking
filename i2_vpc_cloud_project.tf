@@ -59,8 +59,8 @@ resource "aws_security_group" "allow_ssh_icmp_from_gcp" {
   }
   
   ingress {
-    from_port   = -1
-    to_port     = -1
+    from_port   = 8
+    to_port     = 0
     protocol    = "icmp"
     cidr_blocks = ["10.2.0.0/24"] // Allow icmp traffic from GCP CIDR
   }
