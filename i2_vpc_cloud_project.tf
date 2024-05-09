@@ -32,7 +32,7 @@ resource "aws_vpc" "i2_project_aws_terraform_vpc" {
   }
 }
 
-// Create AWS subnet based primary VPC cidr block
+// Create AWS subnet from primary VPC cidr block
 // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet
 resource "aws_subnet" "i2_project_aws_terraform_subnet_1" {
   vpc_id            = aws_vpc.i2_project_aws_terraform_vpc.id
