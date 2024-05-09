@@ -43,6 +43,35 @@ resource "aws_subnet" "i2_project_aws_terraform_subnet_1" {
   }
 }
 
+// Create a Virtual Private Gateway
+// https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpn_gateway
+resource "aws_vpn_gateway" "i2_project_terraform_virtual_private_gateway" {
+  vpc_id = aws_vpc.i2_project_aws_terraform_vpc.id
+
+  tags = {
+    Name = "i2_project_terraform_vpg"
+  }
+}
+
+// Attach Virtual Private Gateway to your VPC
+// https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpn_gateway_attachment
+resource "aws_vpn_gateway_attachment" "vpn_attachment" {
+  vpc_id         = aws_vpc.i2_project_aws_terraform_vpc.id
+  vpn_gateway_id = aws_vpn_gateway.i2_project_terraform_virtual_private_gateway.id
+
+  // Ensure that the Virtual Private Gateway is created first
+  depends_on = [aws_vpn_gateway.i2_project_terraform_virtual_private_gateway]
+}
+
+// Associate prefix with the Direct Connect gateway
+// https://registry.terraform.io/providers/figma/aws-4-49-0/latest/docs/resources/dx_gateway_association_proposal
+resource "aws_dx_gateway_association_proposal" "i2_project_terraform_dx_gateway_association_proposal" {
+  dx_gateway_id        = "62adae79-7cd8-4ce7-8f1c-e53d31d7abdb"
+  dx_gateway_owner_account_id = "703594241974"
+  associated_gateway_id = "vgw-0a9218d7c9ef0b2f1"
+  allowed_prefixes     = ["10.3.1.0/24"]
+}
+
 // ***AWS Security Group***
 // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group
 resource "aws_security_group" "allow_ssh_icmp_from_gcp" {
@@ -91,4 +120,3 @@ resource "google_compute_firewall" "allow_ssh_icmp_from_aws" {
 
   source_ranges = ["10.3.0.0/16"] // Allow ssh and icmp traffic from AWS CIDR
 }
-
