@@ -53,7 +53,7 @@ resource "aws_vpn_gateway" "i2_project_terraform_virtual_private_gateway" {
   }
 }
 
-// Attach Virtual Private Gateway to your VPC
+// Attach Virtual Private Gateway to VPC
 // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpn_gateway_attachment
 resource "aws_vpn_gateway_attachment" "vpn_attachment" {
   vpc_id         = aws_vpc.i2_project_aws_terraform_vpc.id
