@@ -53,7 +53,7 @@ resource "aws_vpn_gateway" "i2_project_terraform_virtual_private_gateway" {
   }
 }
 
-// Attach Virtual Private Gateway to VPC
+// Attach Virtual Private Gateway
 // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpn_gateway_attachment
 resource "aws_vpn_gateway_attachment" "vpn_attachment" {
   vpc_id         = aws_vpc.i2_project_aws_terraform_vpc.id
@@ -70,6 +70,36 @@ resource "aws_dx_gateway_association_proposal" "i2_project_terraform_dx_gateway_
   dx_gateway_owner_account_id = "703594241974"
   associated_gateway_id = "vgw-0a9218d7c9ef0b2f1"
   allowed_prefixes     = ["10.3.1.0/24"]
+}
+
+// Create Internet Gateway
+// https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway
+resource "aws_internet_gateway" "i2_project_aws_terraform_igw" {
+  vpc_id = aws_vpc.i2_project_aws_terraform_vpc.id
+    tags = {
+    Name = "i2_project_terraform_igw"
+  }
+}
+
+// Create a route table
+// https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table.html
+resource "aws_route_table" "i2_project_aws_terraform_route_table" {
+  vpc_id = aws_vpc.i2_project_aws_terraform_vpc.id
+}
+
+// Create a route to the Internet Gateway
+// https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route
+resource "aws_route" "i2_project_aws_terraform_internet_gateway_route" {
+  route_table_id         = aws_route_table.i2_project_aws_terraform_route_table.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.i2_project_aws_terraform_igw.id
+}
+
+// Associate the route table with the subnet
+// https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association
+resource "aws_route_table_association" "i2_project_aws_terraform_route_table_association" {
+  subnet_id      = aws_subnet.i2_project_aws_terraform_subnet_1.id
+  route_table_id = aws_route_table.i2_project_aws_terraform_route_table.id
 }
 
 // ***AWS Security Group***
